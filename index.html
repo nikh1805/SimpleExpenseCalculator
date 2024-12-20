@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+       <meta charset="UTF-8">
+    <title>Expense calculator</title>
+    <style>
+    body {background-color: peachpuff; width: 1000px; margin: 10px auto; border: 3px solid blue; overflow:hidden;}
+    h1   {color: blue; text-align: center; }
+    h2   {margin: 15px;}
+    p    {color: black; margin: 15px;}
+    th   {color: violet;padding: 35px;}
+    tr {text-align: center; }
+    table {margin: 15px; border-collapse: separate; border-spacing: 2px; border-color: lightgray;}
+    input {text-align: center;}
+   </style>
+</head>
+<body>
+    <h1>Expense Calculator</h1>
+    <h3>Add entry</h3>
+    <form action = "http://localhost:9000/create" method = "POST">
+         <p>Description <input type = "text" name = "Description" required/></p>
+         <p>Expense Type<select name="Type">
+                      <option value="Credit" SELECTED>Earned</option>
+                      <option value="Debit">Spent</option>
+                    </select></p>
+        <p>Date <input type = "text" name = "Date" required/></p>
+         <p>Amount <input type = "number" name = "Amount" required/></p>
+         <p><input type = "submit" value = "submit" /></p>
+    </form><br>
+    <h2>Entries</h2>
+    <table border = 5>
+        <tr>
+            <th>Description</th>
+            <th>Expense Type</th>
+            <th>Date</th>
+            <th>Amount</th>
+            <th>Modify</th>
+            <th>Delete</th>
+        </tr>
+        {% for key in exp_list %}
+            <tr>
+                <form action="http://localhost:9000/update/{{key[0]}}"
+                      method="POST">
+                <td><input type = "text" value="{{key[1]}}" name="Description"></td>
+                    {% if (key[2] == "Debit") %}
+                      <td><select name="Type">
+                            <option value="Debit" SELECTED>Spent</option>
+                            <option value="Credit">Earned</option>
+                          </select></td>
+                    {% elif (key[2] == "Credit") %}
+                    <td><select name="Type">
+                            <option value="Debit">Spent</option>
+                            <option value="Credit" SELECTED>Earned</option>
+                          </select></td>
+                    {% endif %}
+                <td><input type = "text" value="{{key[3]}}" name="Date"></td>
+                <td><input type = "number" value="{{key[4]}}" name="Amount"></td>
+                <td><input type = "submit" value="Update"></td>
+                </form>
+                <td><form action = "http://localhost:9000/delete/{{key[0]}}"
+                          method = "POST">
+                    <input type = "submit" value="Delete"></form></td>
+            </tr>
+        {% endfor %}
+    </table><br><br>
+    <h3>{{message}}</h3>
+</body>
+</html>
